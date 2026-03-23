@@ -14,7 +14,25 @@
   <div class="gradio-wrapper">
     <gradio-app src="https://huggingface.co/spaces/CastBison/golden_seas"></gradio-app>
   </div>
-
   <script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/5.38.0/gradio.js"></script>
+  <script>
+    function hideFooter() {
+      const app = document.querySelector('gradio-app');
+      if (!app) return;
+      const root = app.shadowRoot;
+      if (!root) return;
+      const style = document.createElement('style');
+      style.textContent = 'footer { display: none !important; }';
+      root.appendChild(style);
+    }
+
+    const interval = setInterval(() => {
+      const app = document.querySelector('gradio-app');
+      if (app && app.shadowRoot) {
+        hideFooter();
+        clearInterval(interval);
+      }
+    }, 300);
+  </script>
 </body>
 </html>
