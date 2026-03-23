@@ -16,23 +16,33 @@
   </div>
   <script type="module" src="https://gradio.s3-us-west-2.amazonaws.com/5.38.0/gradio.js"></script>
   <script>
-    function hideFooter() {
-      const app = document.querySelector('gradio-app');
-      if (!app) return;
-      const root = app.shadowRoot;
-      if (!root) return;
+  function nukeFooter() {
+    const app = document.querySelector('gradio-app');
+    if (!app || !app.shadowRoot) return;
+    const root = app.shadowRoot;
+
+    // Remove any existing footer elements
+    root.querySelectorAll('footer').forEach(el => el.remove());
+
+    // Inject style as a fallback
+    if (!root.querySelector('#hide-footer-style')) {
       const style = document.createElement('style');
-      style.textContent = 'footer { display: none !important; }';
+      style.id = 'hide-footer-style';
+      style.textContent = `
+        footer, .footer, [class*="footer"], 
+        .svelte-footer, .show-api, .built-with { 
+          display: none !important; 
+          visibility: hidden !important;
+          height: 0 !important;
+          overflow: hidden !important;
+        }
+      `;
       root.appendChild(style);
     }
+  }
 
-    const interval = setInterval(() => {
-      const app = document.querySelector('gradio-app');
-      if (app && app.shadowRoot) {
-        hideFooter();
-        clearInterval(interval);
-      }
-    }, 300);
-  </script>
+  // Keep hammering it in case Gradio re-renders
+  setInterval(nukeFooter, 500);
+</script>
 </body>
 </html>
